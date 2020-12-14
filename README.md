@@ -1,4 +1,4 @@
-# pi-Hole
+# PhotoPrism
 This project is part of my [homeserver](https://github.com/ron-blom/homeserver) project and will deploy photoprism on my homeserver. 
 
 persistent storage:

@@ -1,0 +1,121 @@
+# Default values for photoprism-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: photoprism/photoprism
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# podAnnotations:
+#     k8s.v1.cni.cncf.io/networks: '[
+#             { "name": "macvlan-110",
+#               "ips": [ "192.168.110.11/24" ],
+#               "mac": "c2:0c:c0:a8:6e:0b",
+#               "gateway": [ "192.168.110.1"   ]
+#             }]'
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: NodePort
+  port: 2342
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: photoprism.local
+      paths:
+        - /
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+environmentvars:
+  TZ: Europe/Amsterdam
+  PHOTOPRISM_ADMIN_PASSWORD: "please-change"     # Initial admin password: PLEASE CHANGE!
+  PHOTOPRISM_DEBUG: "false"                      # Run in debug mode (shows additional log messages)
+  PHOTOPRISM_PUBLIC: "false"                     # No authentication required (disables password protection)
+  PHOTOPRISM_READONLY: "false"                   # Don't modify originals directory (reduced functionality)
+  PHOTOPRISM_UPLOAD_NSFW: "true"                 # Allow uploads that MAY be offensive
+  PHOTOPRISM_DETECT_NSFW: "false"                # Flag photos as private that MAY be offensive
+  PHOTOPRISM_EXPERIMENTAL: "false"               # Enable experimental features
+  PHOTOPRISM_SITE_URL: "https://photoprism.local/"  # Canonical / public site URL
+  PHOTOPRISM_SITE_TITLE: "PhotoPrism"
+  PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
+  PHOTOPRISM_SITE_DESCRIPTION: ""
+  PHOTOPRISM_SITE_AUTHOR: ""
+  PHOTOPRISM_HTTP_HOST: "0.0.0.0"
+  PHOTOPRISM_HTTP_PORT: 2342
+  PHOTOPRISM_SETTINGS_HIDDEN: "false"            # Users can not view or change settings
+  PHOTOPRISM_DATABASE_DRIVER: "sqlite"           # SQLite is an embedded database that doesn't require a server
+  # PHOTOPRISM_DATABASE_DRIVER: "mysql"          # Use MariaDB (or MySQL) instead of SQLite for improved performance
+  # PHOTOPRISM_DATABASE_DSN: "photoprism:insecure@tcp(mariadb:3306)/photoprism?charset=utf8mb4,utf8&parseTime=true"
+  PHOTOPRISM_SIDECAR_JSON: "true"                # Automatically create JSON sidecar files using Exiftool
+  PHOTOPRISM_SIDECAR_YAML: "true"                # Automatically backup metadata to YAML sidecar files
+  PHOTOPRISM_THUMB_FILTER: "lanczos"             # Resample filter, best to worst: blackman, lanczos, cubic, linear
+  PHOTOPRISM_THUMB_UNCACHED: "false"             # Enable on-demand thumbnail rendering (high memory and cpu usage)
+  PHOTOPRISM_THUMB_SIZE: 2048                    # Pre-rendered thumbnail size limit (default 2048, min 720, max 7680)
+  # PHOTOPRISM_THUMB_SIZE: 4096                  # Retina 4K, DCI 4K (requires more storage); 7680 for 8K Ultra HD
+  PHOTOPRISM_THUMB_SIZE_UNCACHED: 7680           # On-demand rendering size limit (default 7680, min 720, max 7680)
+  PHOTOPRISM_JPEG_SIZE: 7680                     # Size limit for converted image files in pixels (720-30000)
+  PHOTOPRISM_JPEG_QUALITY: 92                    # Set to 95 for high-quality thumbnails (25-100)
+  PHOTOPRISM_DARKTABLE_PRESETS: "false"          # Use darktable presets (disables concurrent raw to jpeg conversion)
+  # You may optionally set user, group and/or file permissions using environment variables:
+  # UID: 1000
+  # GID: 1000
+  # UMASK: 0000

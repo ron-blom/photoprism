@@ -26,9 +26,30 @@ metadata:
     helm.sh/resource-policy: "keep"
     meta.helm.sh/release-name: "{{ $.Release.Name }}"
     meta.helm.sh/release-namespace: "{{ $.Release.Namespace }}"
-  name: photoprism-originals
+  name: photoprism-import
   labels:
-    app: photoprism-originals
+    app: photoprism-import
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "100G"
+  storageClassName: local-path
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    helm.sh/resource-policy: "keep"
+    meta.helm.sh/release-name: "{{ $.Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ $.Release.Namespace }}"
+  name: resilio-data
+  labels:
+    app: resilio-data
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

@@ -5,6 +5,8 @@ persistent storage:
 ```
 /photoprism/storage
 /photoprism/originals
+/photoprism/import
+
 ```
 
 Images used in this project:
@@ -14,4 +16,4 @@ photoprism/photoprism:latest (https://hub.docker.com/r/photoprism/photoprism/)
 
 ### Deploy 
 
-helm upgrade --install photoprism-chart ./photoprism-chart
+helm secrets upgrade --install photoprism-chart ./photoprism-chart -f photoprism-chart/secrets.yaml

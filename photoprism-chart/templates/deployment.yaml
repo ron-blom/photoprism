@@ -38,11 +38,36 @@ spec:
           volumeMounts:
             - name: photoprism-storage
               mountPath: /photoprism/storage
-            - name: photoprism-originals
+            - name: photoprism-import
               mountPath: /photoprism/originals
           ports:
             - name: http
               containerPort: 2342
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- range $key, $val := .Values.environmentvars }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}      
+        - name: resilio-sidecar
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: resilio/sync:latest
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: resilio-data
+              mountPath: /mnt/sync
+            - name: photoprism-import
+              mountPath: /mnt/mounted_folders/photoprism-import
+          ports:
+            - name: http
+              containerPort: 8888
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -71,7 +96,10 @@ spec:
         - name: photoprism-storage
           persistentVolumeClaim:
             claimName: photoprism-storage
-        - name: photoprism-originals
+        - name: photoprism-import
           persistentVolumeClaim:
-            claimName: photoprism-originals
+            claimName: photoprism-import
+        - name: resilio-data
+          persistentVolumeClaim:
+            claimName: resilio-data
   

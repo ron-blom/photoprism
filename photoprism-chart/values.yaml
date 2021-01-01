@@ -23,13 +23,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# podAnnotations:
-#     k8s.v1.cni.cncf.io/networks: '[
-#             { "name": "macvlan-110",
-#               "ips": [ "192.168.110.11/24" ],
-#               "mac": "c2:0c:c0:a8:6e:0b",
-#               "gateway": [ "192.168.110.1"   ]
-#             }]'
+podAnnotations:
+    k8s.v1.cni.cncf.io/networks: '[
+            { "name": "macvlan-110",
+              "ips": [ "192.168.110.14/24" ],
+              "mac": "c2:0c:c0:a8:6e:0e"
+            }]'
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -55,10 +54,10 @@ ingress:
     - host: photoprism.local
       paths:
         - /
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+   - secretName: photoprism-local-tls
+     hosts:
+       - photoprism.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -89,14 +88,14 @@ environmentvars:
   TZ: Europe/Amsterdam
   PHOTOPRISM_ADMIN_PASSWORD: "please-change"     # Initial admin password: PLEASE CHANGE!
   PHOTOPRISM_DEBUG: "false"                      # Run in debug mode (shows additional log messages)
-  PHOTOPRISM_PUBLIC: "false"                     # No authentication required (disables password protection)
+  PHOTOPRISM_PUBLIC: "true"                     # No authentication required (disables password protection)
   PHOTOPRISM_READONLY: "false"                   # Don't modify originals directory (reduced functionality)
   PHOTOPRISM_UPLOAD_NSFW: "true"                 # Allow uploads that MAY be offensive
   PHOTOPRISM_DETECT_NSFW: "false"                # Flag photos as private that MAY be offensive
   PHOTOPRISM_EXPERIMENTAL: "false"               # Enable experimental features
   PHOTOPRISM_SITE_URL: "https://photoprism.local/"  # Canonical / public site URL
   PHOTOPRISM_SITE_TITLE: "PhotoPrism"
-  PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
+  PHOTOPRISM_SITE_CAPTION: "Familie Blom"
   PHOTOPRISM_SITE_DESCRIPTION: ""
   PHOTOPRISM_SITE_AUTHOR: ""
   PHOTOPRISM_HTTP_HOST: "0.0.0.0"
@@ -105,6 +104,7 @@ environmentvars:
   PHOTOPRISM_DATABASE_DRIVER: "sqlite"           # SQLite is an embedded database that doesn't require a server
   # PHOTOPRISM_DATABASE_DRIVER: "mysql"          # Use MariaDB (or MySQL) instead of SQLite for improved performance
   # PHOTOPRISM_DATABASE_DSN: "photoprism:insecure@tcp(mariadb:3306)/photoprism?charset=utf8mb4,utf8&parseTime=true"
+  PHOTOPRISM_IMPORT_PATH: "/photoprism/import"
   PHOTOPRISM_SIDECAR_JSON: "true"                # Automatically create JSON sidecar files using Exiftool
   PHOTOPRISM_SIDECAR_YAML: "true"                # Automatically backup metadata to YAML sidecar files
   PHOTOPRISM_THUMB_FILTER: "lanczos"             # Resample filter, best to worst: blackman, lanczos, cubic, linear

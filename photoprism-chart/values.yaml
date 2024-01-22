@@ -47,13 +47,15 @@ service:
 
 ingress:
   enabled: true
+  className: ""
   annotations:
     kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: photoprism.local
       paths:
-        - /
+        - path: /
+          pathType: ImplementationSpecific
   tls:
    - secretName: photoprism-local-tls
      hosts:
